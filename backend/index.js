@@ -7,11 +7,11 @@ const path = require("path");
 const cors = require("cors");
 const { type } = require("os");
 const { error } = require("console");
-require('dotenv').config();
+
 app.use(express.json());
 app.use(cors());
 
-//Database connection
+require("dotenv").config();
 //Database connection
 mongoose.connect(process.env.MONGODB_URL)
 .then(() => console.log("MongoDB Connected Successfully"))
@@ -37,11 +37,14 @@ const upload = multer({ storage: storage });
 //creating endpoint for images
 app.use("/images", express.static("./upload/images"));
 app.post("/upload", upload.single("product"), (req, res) => {
+  const host = req.get("host"); // gets host dynamically
+  const protocol = req.protocol; // gets http or https
   res.json({
     success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`,
+    image_url: `${protocol}://${host}/images/${req.file.filename}`,
   });
 });
+
 
 //Schema for creating products
 const Product = mongoose.model("Product", {
