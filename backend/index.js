@@ -253,7 +253,7 @@ app.post('/getcart',fetchUser,async(req,res)=>{
 });
 
 //starting server
-app.listen(port, (error) => {
+app.listen(port||5000, (error) => {
   if (error) {
     console.log("Error : " + error);
   }
