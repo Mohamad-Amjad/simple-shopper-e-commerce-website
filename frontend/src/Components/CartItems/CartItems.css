@@ -1,0 +1,431 @@
+.cartitems {
+  margin: 50px 100px;
+  min-height: 60vh;
+}
+
+.cartitems hr {
+  height: 2px;
+  background: #e2e2e2;
+  border: 0;
+  margin: 10px 0;
+}
+
+.cartitems-format-main {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 30px;
+  padding: 20px 0px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cartitems-format {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background 0.3s;
+  padding: 10px 0;
+}
+
+.carticon-product-icon {
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.cartitems-remove-icon {
+  width: 18px;
+  margin: 0px 40px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.cartitems-remove-icon:hover {
+  transform: scale(1.2);
+  filter: brightness(0.8);
+}
+
+.cartitems-quantity {
+  width: 50px;
+  height: 40px;
+  border: 1px solid #ebebeb;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Down Section */
+.cartitems-down {
+  display: flex;
+  margin: 80px 0px;
+  gap: 80px;
+}
+
+.cartitems-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cartitems-total h1 {
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--secondary-color);
+}
+
+.cartitems-total-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0px;
+  border-bottom: 1px solid #ebebeb;
+  color: var(--text-secondary);
+}
+
+.cartitems-total-item h3 {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.cartitems-total button {
+  width: 100%;
+  height: 55px;
+  outline: none;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  margin-top: 20px;
+}
+
+.cartitems-total button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Promocode */
+.cartItems-promocode {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.cartItems-promocode p {
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+
+.cartitems-promobox {
+  width: 100%;
+  height: 55px;
+  background: #eaeaea;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding-left: 20px;
+}
+
+.cartitems-promobox input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.cartitems-promobox button {
+  width: 140px;
+  height: 100%;
+  font-size: 16px;
+  background: var(--secondary-color);
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+}
+
+.cartitems-promobox button:hover {
+  background: #333;
+}
+
+/* Responsive */
+@media(max-width: 1280px) {
+  .cartitems { margin: 50px 50px; }
+  .cartitems-format-main { gap: 20px; }
+}
+
+@media(max-width: 1024px) {
+  .cartitems { margin: 40px 30px; }
+  .cartitems-format-main { font-size: 16px; grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 0.5fr; }
+  .carticon-product-icon { height: 50px; width: 50px; }
+  .cartitems-down { flex-direction: column; gap: 50px; }
+  .cartitems-total { width: 100%; max-width: 500px; }
+}
+
+@media(max-width: 800px) {
+  .cartitems { margin: 30px 10px; }
+  
+  /* Hide standard headers on mobile */
+  .cartitems-format-main { display: none; }
+  
+  /* Make items look like cards */
+  .cartitems-format {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px 20px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    align-items: start;
+    position: relative;
+  }
+  
+  .carticon-product-icon {
+    grid-row: 1 / span 3;
+    width: 80px;
+    height: 80px;
+  }
+  
+  /* Name */
+  .cartitems-format p:nth-child(2) {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  
+  /* Price */
+  .cartitems-format p:nth-child(3) {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  /* Quantity Button */
+  .cartitems-quantity {
+    width: 40px; 
+    height: 30px;
+  }
+  
+  /* Total Price */
+  .cartitems-format p:nth-child(5) {
+    font-weight: 700;
+  }
+  
+  /* Remove Icon - float absolute or grid placement */
+  .cartitems-remove-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    margin: 0;
+  }
+  
+  .cartitems-promobox { width: 100%; }
+}
+
+@media(max-width: 500px) {
+  .cartitems-total h1 { font-size: 24px; }
+  .cartitems-promobox button { width: 100px; font-size: 14px; }
+}
+
+.cartitems-format-main {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 50px;
+  padding: 20px 0px;
+  color: #454545;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cartitems-format {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.carticon-product-icon {
+  height: 50px;
+}
+
+.cartitems-remove-icon {
+  width: 15px;
+  margin: 0px 40px;
+  cursor: pointer;
+}
+
+.cartitems-quantity {
+  width: 64px;
+  height: 50px;
+  border: 2px solid #ebebeb;
+  background: #fff;
+}
+
+.cartitems-down {
+  display: flex;
+  margin: 100px 0px;
+}
+
+.cartitems-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 200px;
+}
+
+.cartitems-total h1 {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.cartitems-total-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0px;
+}
+
+.cartitems-total-item h3{
+  font-weight: 600;
+}
+.cartitems-total button {
+  width: 260px;
+  height: 50px;
+  outline: none;
+  border: none;
+  background: #ff5a5a;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 30px;
+  color: white;
+}
+
+.cartItems-promocode {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.cartItems-promocode p {
+  color: #555;
+}
+
+.cartitems-promobox {
+  width: 400px;
+  margin-top: 15px;
+  padding-left: 10px;
+  height: 58px;
+  background: #eaeaea;
+}
+
+.cartitems-promobox input{
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    width: 250px;
+    height: 50px;
+}
+
+.cartitems-promobox button{
+    width: 140px;
+    height: 58px;
+    font-size: 16px;
+    background: black;
+    color: white;
+    cursor: pointer;
+}
+
+@media(max-width:1280px){
+    .cartitems{
+        margin: 40px 80px;
+    }
+    .cartitems-format-main{
+        gap: 40px;
+        font-size: 16px;
+    }
+}
+
+@media(max-width:1024px){
+    .cartitems{
+        margin: 30px 40px;
+    }
+    .cartitems-format-main{
+        gap: 20px;
+        font-size: 14px;
+    }
+    .cartitems-format{
+        font-size: 13px;
+    }
+    .carticon-product-icon {
+        height: 40px;
+    }
+    .cartitems-quantity {
+        width: 40px;
+        height: 30px;
+    }
+    .cartitems-remove-icon {
+        width: 12px;
+        margin: 0px 20px;
+    }
+    .cartitems-total {
+        margin-right: 100px;
+    }
+}
+
+@media(max-width:800px){
+    .cartitems{
+        margin: 20px;
+    }
+    .cartitems-format-main{
+        display: none;
+    }
+    .cartitems-format{
+        display: grid;
+        grid-template-columns: 0.5fr 3fr 0.5fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    /* We need to restructure cart items view for mobile manually or just hide labels and show items in a different way. 
+    However, structure is fixed in JSX so we can only CSS. 
+    Common trick: Hide the header row, and make the item row grid differently.
+    But item row shares the same class 'cartitems-format-main' usually? No, the JSX iteration probably applies a class.
+    Let's check CartItems.jsx later if needed, but for now strict CSS changes.
+    Actually line 22 is '.cartitems-format'. The JSX loop likely applies `cartitems-format`.
+    Wait, `cartitems-format-main` is the header. The items are formatted similar to header?
+    */
+    .cartitems-down{
+        flex-direction: column;
+        gap: 50px;
+    }
+    .cartitems-total{
+        width: 100%;
+        margin: 0;
+    }
+    .cartitems-promobox{
+        width: 100%;
+        display: flex;
+    }
+    .cartitems-promobox input{
+        width: 100%;
+    }
+    .cartitems-promobox button{
+        width: 120px;
+    }
+}
+
+
+
+

@@ -1,0 +1,246 @@
+.hero {
+  height: 90vh; /* Reduced from 100vh for better fold visibility */
+  background: var(--bg-gradient);
+  display: flex;
+  margin-bottom: 50px;
+}
+
+.hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 25px;
+  padding-left: 10%; /* Percentage padding for better scaling */
+  line-height: 1.2;
+}
+
+.hero-left h2 {
+  color: var(--secondary-color);
+  font-size: 24px; /* Scaled up */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-left p {
+  color: var(--secondary-color);
+  font-size: 70px; /* Scaled up */
+  font-weight: 800;
+}
+
+.hero-hand-icon {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero-hand-icon img {
+  width: 90px;
+  transition: transform 0.5s ease;
+}
+
+.hero-hand-icon:hover img {
+  transform: rotate(20deg); /* Playful interaction */
+}
+
+.hero-latest-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 280px;
+  height: 65px;
+  border-radius: var(--radius-lg);
+  margin-top: 35px;
+  background: var(--primary-color);
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.hero-latest-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-right {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-right img {
+  width: 85%;
+  max-width: 600px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); /* nicer shadow */
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Responsive Design */
+@media(max-width: 1280px) {
+  .hero-left p { font-size: 55px; }
+  .hero-right img { width: 450px; }
+}
+
+@media(max-width: 1024px) {
+  .hero-left { padding-left: 5%; }
+  .hero-left p { font-size: 45px; }
+  .hero-right img { width: 380px; }
+  .hero-latest-btn { width: 240px; height: 55px; font-size: 18px; }
+}
+
+@media(max-width: 800px) {
+  .hero {
+    height: auto;
+    flex-direction: column-reverse; /* Image on top usually better? Or text on top? User had text on left. Let's stack column */
+    flex-direction: column;
+    padding-bottom: 50px;
+    gap: 30px;
+  }
+  .hero-left {
+    padding-left: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-left h2 { font-size: 18px; }
+  .hero-left p { font-size: 40px; }
+  .hero-right img { width: 300px; margin-top: 30px; }
+  .hero-latest-btn { margin-top: 20px; }
+}
+
+@media(max-width: 500px) {
+  .hero-left p { font-size: 32px; }
+  .hero-right img { width: 260px; }
+}
+
+.hero-left{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    padding-left:180px ;
+    line-height: 1.1;
+}
+
+.hero-left h2{
+    color: #090909;
+    font-size: 20px;
+    font-weight:600 ;
+    
+}
+
+.hero-left p{
+    color: #171717;
+    font-size: 62px;
+    font-weight: 700;
+}
+
+.hero-hand-icon{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-hand-icon img{
+    width: 100px;
+}
+
+.hero-latest-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 300px;
+    height: 60px;
+    border-radius: 70px;
+    margin-top: 30px;
+    background:#ff4141 ;
+    color: white;
+    font-size: 22px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.hero-latest-btn:hover {
+    box-shadow: 0 5px 10px 0 #ff4141;
+}
+.hero-right{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+}
+
+@media(max-width:1280px){
+    .hero-left{
+        padding-left: 100px;
+    }
+    .hero-latest-btn{
+        margin-top: 20px;
+        width: 250px;
+        height: 50px;
+        font-size: 20px;
+    }
+    .hero-left p{
+        font-size: 50px;
+    }
+}
+
+@media(max-width:1024px){
+    .hero-left{
+        padding-left: 50px;
+    }
+    .hero-left p{
+        font-size: 40px;
+    }
+    .hero-right img{
+        width: 400px;
+    }
+}
+
+@media(max-width:800px){
+    .hero{
+        flex-direction: column;
+    }
+    .hero-left{
+        padding-left: 0;
+        align-items: center;
+        text-align: center;
+    }
+    .hero-left h2{
+        font-size: 16px;
+    }
+    .hero-left p{
+        font-size: 30px;
+    }
+    .hero-hand-icon img{
+        width: 70px;
+    }
+    .hero-latest-btn{
+        width: 200px;
+        height: 40px;
+        font-size: 16px;
+    }
+    .hero-right img{
+        width: 300px;
+    }
+}
+
+@media(max-width:500px){
+    .hero-right img{
+        width: 260px;
+    }
+}

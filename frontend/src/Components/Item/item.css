@@ -1,0 +1,64 @@
+.item {
+  width: 200px;
+  float: left; /* Or ensure it works within grid */
+  margin: 10px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-radius: var(--radius-sm);
+  background: white;
+  padding: 10px;
+  /* Ensure items have consistent height if needed, or rely on content */
+}
+
+.item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.item img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: cover; /* Ensure images don't distort */
+  transition: transform 0.4s;
+}
+
+.item:hover img {
+  transform: scale(1.02);
+}
+
+.item p {
+  margin: 15px 0px 10px 0px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit text lines */
+  -webkit-box-orient: vertical;
+}
+
+.item-prices {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.item-price-new {
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.item-price-old {
+  color: #8c8c8c;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: line-through;
+}
+
+
+
+
+
