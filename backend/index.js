@@ -14,7 +14,7 @@ app.use(cors());
 
 //Database connection
 //Database connection
-mongoose.connect("mongodb://localhost:27017/E-commerce")
+mongoose.connect("mongodb+srv://amjad:db%403150@cluster0.csd3nsa.mongodb.net/E-commerce?appName=Cluster0")
 .then(() => console.log("MongoDB Connected Successfully"))
 .catch((err) => console.error("MongoDB Connection Failed:", err));
 //API creation
