@@ -253,9 +253,4 @@ app.post('/getcart',fetchUser,async(req,res)=>{
 });
 
 //starting server
-app.listen(port, (error) => {
-  if (error) {
-    console.log("Error : " + error);
-  }
-  console.log("Server Running on Port ");
-});
+module.exports = app; 
