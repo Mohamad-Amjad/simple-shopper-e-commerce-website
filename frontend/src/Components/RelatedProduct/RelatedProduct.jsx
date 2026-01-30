@@ -5,9 +5,7 @@ import Item from '../Item/Item';
 
 const RelatedProduct = () => {
   const { all_product } = useContext(ShopContext);
-  // Simple logic: Show first 4 products, or randomize. 
-  // Ideally filtering by category, but context doesn't pass category here easily without props.
-  // Let's just show a slice for now to match "Popular" behavior or pass props later.
+
   const related = all_product.slice(0, 4);
 
   return (
