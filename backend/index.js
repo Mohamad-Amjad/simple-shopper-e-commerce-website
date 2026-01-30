@@ -1,4 +1,3 @@
-const port = 4000;
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
@@ -8,13 +7,13 @@ const path = require("path");
 const cors = require("cors");
 const { type } = require("os");
 const { error } = require("console");
-
+require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
 //Database connection
 //Database connection
-mongoose.connect("mongodb+srv://amjad:db%403150@cluster0.csd3nsa.mongodb.net/E-commerce?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect(process.env.MONGODB_URL)
 .then(() => console.log("MongoDB Connected Successfully"))
 .catch((err) => console.error("MongoDB Connection Failed:", err));
 //API creation
@@ -236,6 +235,7 @@ app.post('/addtocart',fetchUser,async(req,res)=>{
   let userData=await Users.findOne({_id:req.user.id});
   userData.cartData[req.body.itemId]+=1;
   await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+  res.json({ success: true, cartData: userData.cartData });
 });
 
 //creating endpoints for removing products into cartdata
@@ -253,11 +253,10 @@ app.post('/getcart',fetchUser,async(req,res)=>{
 });
 
 //starting server
-app.listen(port||8000, (error) => {
-  if (error) {
-    console.log("Error : " + error);
-  }
-  console.log("Server Running on Port ");
-});
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => console.log(`Server running locally on http://localhost:${port}`));
+}
 
-module.exports = app; 
+// Export app for Vercel serverless
+module.exports = app;
