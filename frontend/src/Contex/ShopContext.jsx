@@ -11,7 +11,9 @@ const getDefaultCart = () => {
 
 // Automatic Environment Detection
 const getBackendUrl = () => {
-  if (window.location.hostname === "localhost") return "http://localhost:4000";
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return "http://localhost:4000";
+  }
   return "https://shopper-backend-wheat.vercel.app";
 };
 
@@ -21,24 +23,20 @@ const getNormalizedImageUrl = (url) => {
   if (url.startsWith("data:")) return url; // Base64 is fine
   
   const backendBaseUrl = getBackendUrl();
-  let finalUrl = url;
+  let filename = "";
   
-  // 1. If it's a full URL (likely localhost:4000), extract the filename and fix it
+  // Extract filename from ANY format (URL, Windows path, Linux path)
   if (url.includes("://")) {
     try {
-      const parts = url.replace(/\\/g, '/').split("/");
-      const filename = parts[parts.length - 1];
-      finalUrl = `${backendBaseUrl}/images/${filename}`;
+      filename = url.replace(/\\/g, '/').split("/").pop();
     } catch (e) {
-      finalUrl = url;
+      filename = url;
     }
   } else {
-    // 2. If it's just a filename or relative path
-    const filename = url.replace(/\\/g, '/').split("/").pop();
-    finalUrl = `${backendBaseUrl}/images/${filename}`;
+    filename = url.replace(/\\/g, '/').split("/").pop();
   }
   
-  return finalUrl;
+  return `${backendBaseUrl}/images/${filename}`;
 };
 
 const ShopContextProvider = (props) => {

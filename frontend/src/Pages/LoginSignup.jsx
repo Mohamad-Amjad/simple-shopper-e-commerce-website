@@ -11,12 +11,18 @@ const LoginSignup = () => {
 
   const changeHandler=(e)=>{
     setFormData({...formData,[e.target.name]:e.target.value});
-   
+  };
+
+  // Automatic Environment Detection
+  const getBackendUrl = () => {
+    if (window.location.hostname === "localhost") return "http://localhost:4000";
+    return "https://shopper-backend-wheat.vercel.app";
   };
   //creating functions for login and signup
   const login=async()=>{
     let respondData;
-    await fetch(process.env.REACT_APP_API_URL+'/login',{
+    const backendUrl = getBackendUrl();
+    await fetch(backendUrl+'/login',{
       method:'POST',
       headers:{
         Accept:'application/form-data',
@@ -37,7 +43,8 @@ const LoginSignup = () => {
 
   const signup=async()=>{
     let respondData;
-    await fetch(process.env.REACT_APP_API_URL+'/signup',{
+    const backendUrl = getBackendUrl();
+    await fetch(backendUrl+'/signup',{
       method:'POST',
       headers:{
         Accept:'application/form-data',
