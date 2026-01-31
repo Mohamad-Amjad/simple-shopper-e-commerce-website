@@ -3,16 +3,20 @@ import "./Listproduct.css";
 import cross_icon from '../../assets/cross_icon.png';
 
 const ListProduct = () => {
-  const [allProducts, setAllProduct] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
   const fetchData = async () => {
-    await fetch("http://localhost:4000/allproducts")
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    await fetch(backendUrl + "/allproducts")
       .then((res) => res.json())
-      .then((data) => setAllProduct(data));
+      .then((data) => {
+        setAllProducts(data);
+      });
   };
 
-  const remove_data=async(id)=>{
-    await fetch('http://localhost:4000/removeproduct',{
+  const remove_product = async (id) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    await fetch(backendUrl + '/removeproduct', {
       method:'POST',
       headers:{
         Accept:'application/json',

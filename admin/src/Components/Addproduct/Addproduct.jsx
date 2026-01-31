@@ -21,27 +21,29 @@ const Addproduct = () => {
   };
 
   const add_product = async () => {
-    let responseData;
+    let respondData;
     let product = productDetails;
 
     let formData = new FormData();
     formData.append("product", image);
 
-    await fetch("http://localhost:4000/upload", {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    await fetch(backendUrl + "/upload", {
       method: "POST",
       headers: {
         Accept: "application/json",
       },
       body: formData,
     })
-      .then((res) => res.json())
+      .then((resp) => resp.json())
       .then((data) => {
-        responseData = data;
+        respondData = data;
       });
 
-    if (responseData.success) {
-      product.image = responseData.image_url;
-      await fetch("http://localhost:4000/addproduct", {
+    if (respondData.success) {
+      product.image = respondData.image_url;
+      console.log(product);
+      await fetch(backendUrl + "/addproduct", {
         method: "POST",
         headers: {
           Accept: "application/json",
