@@ -8,6 +8,20 @@ const getDefaultCart = () => {
   }
   return cart;
 };
+
+// Frontend safety net: Normalize URLs locally if the backend sends stale localhost links
+const getNormalizedImageUrl = (url, backendBaseUrl) => {
+  if (!url) return url;
+  if (url.startsWith("data:")) return url; // Base64
+  
+  if (url.includes("localhost:4000")) {
+    // Extract filename and rebuild with correct backend base
+    const filename = url.split("/").pop();
+    return `${backendBaseUrl}/images/${filename}`;
+  }
+  return url;
+};
+
 const ShopContextProvider = (props) => {
   const [all_product, setAll_product] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
@@ -21,7 +35,14 @@ const ShopContextProvider = (props) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
       })
-      .then((data) => setAll_product(data))
+      .then((data) => {
+        // Normalize images on frontend as a fallback
+        const normalizedData = data.map(item => ({
+          ...item,
+          image: getNormalizedImageUrl(item.image, backendUrl)
+        }));
+        setAll_product(normalizedData);
+      })
       .catch((err) => console.error("Failed to fetch all products:", err));
 
     if (localStorage.getItem("auth-token")) {

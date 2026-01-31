@@ -9,7 +9,17 @@ const Popular = () => {
     const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
     fetch(backendUrl + "/popularinmen")
       .then((res) => res.json())
-      .then((data) => setData_product(data))
+      .then((data) => {
+        // Frontend normalization fallback
+        const normalizedData = data.map(item => {
+          if (item.image && item.image.includes("localhost:4000")) {
+            const filename = item.image.split("/").pop();
+            return { ...item, image: `${backendUrl}/images/${filename}` };
+          }
+          return item;
+        });
+        setData_product(normalizedData);
+      })
       .catch((err) => console.error("Failed to fetch popular items:", err));
   }, []);;
   return (

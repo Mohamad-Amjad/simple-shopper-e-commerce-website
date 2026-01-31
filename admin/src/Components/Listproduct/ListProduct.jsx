@@ -10,7 +10,15 @@ const ListProduct = () => {
     await fetch(backendUrl + "/allproducts")
       .then((res) => res.json())
       .then((data) => {
-        setAllProducts(data);
+        // Frontend normalization fallback
+        const normalizedData = data.map((item) => {
+          if (item.image && item.image.includes("localhost:4000")) {
+            const filename = item.image.split("/").pop();
+            return { ...item, image: `${backendUrl}/images/${filename}` };
+          }
+          return item;
+        });
+        setAllProducts(normalizedData);
       });
   };
 
