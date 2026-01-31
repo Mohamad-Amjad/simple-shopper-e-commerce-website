@@ -9,7 +9,8 @@
   "functions": {
     "index.js": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 10,
+      "includeFiles": "upload/images/**"
     }
   },
   "routes": [

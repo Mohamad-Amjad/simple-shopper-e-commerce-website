@@ -39,6 +39,30 @@ app.get("/", (req, res) => {
   res.send("Express App is running");
 });
 
+// GET /status - verify deployment and file system
+app.get("/status", (req, res) => {
+  const imagesPath = path.resolve(__dirname, "upload", "images");
+  const fs = require('fs');
+  let imagesFound = [];
+  try {
+    if (fs.existsSync(imagesPath)) {
+      imagesFound = fs.readdirSync(imagesPath);
+    }
+  } catch (e) {
+    console.error("Status error:", e);
+  }
+  
+  res.json({
+    status: "online",
+    version: "v3-robust-urls",
+    host: req.get("host"),
+    protocol: req.headers['x-forwarded-proto'] || req.protocol,
+    imagesPath: imagesPath,
+    imagesCount: imagesFound.length,
+    trustProxy: app.get('trust proxy')
+  });
+});
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
