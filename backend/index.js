@@ -129,9 +129,9 @@ app.post("/addproduct", async (req, res) => {
     let products = await Product.find({});
     let id;
     if (products.length > 0) {
-      let last_product_array = products.slice(-1);
-      let last_product = last_product_array[0];
-      id = last_product.id + 1;
+      // Robust calculation of next ID: find max and add 1
+      const maxId = Math.max(...products.map(p => p.id || 0));
+      id = maxId + 1;
     } else {
       id = 1;
     }
@@ -143,16 +143,16 @@ app.post("/addproduct", async (req, res) => {
       new_price: req.body.new_price,
       old_price: req.body.old_price,
     });
-    console.log(product);
+    console.log("Saving product:", product);
     await product.save();
-    console.log("saved");
+    console.log("Saved successfully");
     res.json({
       success: true,
       name: req.body.name,
     });
   } catch (err) {
     console.error("Add Product Error:", err);
-    res.status(500).json({ success: false, error: "Failed to add product" });
+    res.status(500).json({ success: false, error: "Server Error: " + err.message });
   }
 });
 

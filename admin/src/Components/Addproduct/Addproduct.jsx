@@ -27,6 +27,11 @@ const Addproduct = () => {
     let formData = new FormData();
     formData.append("product", image);
 
+    if (!image) {
+      alert("Please select an image first");
+      return;
+    }
+
     try {
       const uploadResp = await fetch(backendUrl + "/upload", {
         method: "POST",
@@ -35,10 +40,14 @@ const Addproduct = () => {
         },
         body: formData,
       });
+      
+      if (!uploadResp.ok) {
+        throw new Error(`Upload Failed: ${uploadResp.status} ${uploadResp.statusText}`);
+      }
+
       const uploadData = await uploadResp.json();
       
       if (uploadData.success) {
-        // Use a copy of productDetails to avoid state issues
         let product = { ...productDetails, image: uploadData.image_url };
         
         const addResp = await fetch(backendUrl + "/addproduct", {
@@ -49,19 +58,33 @@ const Addproduct = () => {
           },
           body: JSON.stringify(product),
         });
+
+        if (!addResp.ok) {
+          throw new Error(`Add Product Failed: ${addResp.status} ${addResp.statusText}`);
+        }
+
         const addData = await addResp.json();
         
         if (addData.success) {
           alert("Product Added Successfully");
+          // Clear form
+          setProductDetails({
+            name: "",
+            image: "",
+            category: "women",
+            old_price: "",
+            new_price: "",
+          });
+          setImage(false);
         } else {
-          alert("Failed to Add Product: " + (addData.error || "Unknown error"));
+          alert("Error: " + (addData.error || "Unknown server error"));
         }
       } else {
-        alert("Image Upload Failed: " + (uploadData.message || "Unknown error"));
+        alert("Upload Error: " + (uploadData.message || "Unknown error"));
       }
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("An error occurred. Check your connection or file size.");
+      console.error("Operation Error:", error);
+      alert("CRITICAL ERROR: " + error.message + "\n\nTip: If on Vercel, very large images (> 4MB) might fail due to platform limits.");
     }
   };
   return (

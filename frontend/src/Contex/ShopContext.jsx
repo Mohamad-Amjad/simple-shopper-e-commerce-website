@@ -28,7 +28,7 @@ const ShopContextProvider = (props) => {
       fetch(backendUrl + "/getcart", {
         method: "POST",
         headers: {
-          Accept: "application/form-data",
+          Accept: "application/json",
           "auth-token": `${localStorage.getItem("auth-token")}`,
           "Content-Type": "application/json",
         },
@@ -46,7 +46,7 @@ const ShopContextProvider = (props) => {
       fetch(backendUrl + "/addtocart", {
         method: "POST",
         headers: {
-          Accept: "application/form-data",
+          Accept: "application/json",
           "auth-token": `${localStorage.getItem("auth-token")}`,
           "Content-Type": "application/json",
         },
