@@ -11,6 +11,7 @@ const { error } = require("console");
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
+app.set('trust proxy', 1); // Enable trusting proxy for correct protocol detection on Vercel
 
 require("dotenv").config();
 
@@ -63,38 +64,45 @@ const upload = multer({
 // Utility to normalize image URLs for any host
 const getNormalizedImageUrl = (image, req) => {
   if (!image) return image;
-  if (image.startsWith("data:")) return image; // Base64 data URI remains as is
+  
+  // 1. Handle Base64 Data URIs (Vercel Persistence)
+  if (image.startsWith("data:")) return image;
 
   const host = req.get("host");
-  const protocol = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+  // Check both req.protocol and x-forwarded-proto for Vercel/proxies
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
   const baseUrl = `${protocol}://${host}`;
 
-  // If it's an absolute URL (even from a different host), extract the filename
+  // 2. Handle Absolute URLs (even stale ones like localhost:4000)
   if (image.includes("://")) {
     try {
-      // Handle both full URLs and potential weirdly formatted strings
-      const url = new URL(image);
+      // Extract filename from the URL, handling backslashes just in case
+      const normalizedPath = image.replace(/\\/g, '/');
+      const url = new URL(normalizedPath);
       const filename = path.basename(url.pathname);
       return `${baseUrl}/images/${filename}`;
     } catch (e) {
-      // Fallback if URL parsing fails
-      const parts = image.split("/");
+      // Fallback: extract last part of path
+      const parts = image.replace(/\\/g, '/').split("/");
       const filename = parts[parts.length - 1];
       return `${baseUrl}/images/${filename}`;
     }
   }
 
-  // If it's a relative path starting with /images/
-  if (image.startsWith("/images/")) {
-    return `${baseUrl}${image}`;
+  // 3. Handle Relative Paths or just filenames
+  let filename = image.replace(/\\/g, '/'); // Normalize slashes
+  if (filename.includes("/")) {
+    filename = path.basename(filename);
   }
   
-  // Otherwise assume it's just the filename
-  return `${baseUrl}/images/${image}`;
+  return `${baseUrl}/images/${filename}`;
 };
 
 //creating endpoint for images
-app.use("/images", express.static(path.join(__dirname, "upload", "images")));
+// Use an absolute path for express.static to be safer on Vercel
+const imagesPath = path.resolve(__dirname, "upload", "images");
+app.use("/images", express.static(imagesPath));
+console.log(`Static images path configured at: ${imagesPath}`);
 app.post("/upload", upload.single("product"), (req, res) => {
   if (process.env.VERCEL) {
     if (!req.file) {
