@@ -61,7 +61,7 @@ const upload = multer({
 });
 
 //creating endpoint for images
-app.use("/images", express.static("./upload/images"));
+app.use("/images", express.static(path.join(__dirname, "upload", "images")));
 app.post("/upload", upload.single("product"), (req, res) => {
   if (process.env.VERCEL) {
     if (!req.file) {
@@ -179,8 +179,18 @@ app.get("/allproducts", async (req, res) => {
   try {
     await connectToDatabase();
     let products = await Product.find({});
-    console.log("All products fetched");
-    res.send(products);
+    // Dynamically adjust image URLs to the current host
+    const host = req.get("host");
+    const protocol = req.protocol;
+    const productsWithAdjustedImages = products.map(product => {
+      let productObj = product.toObject();
+      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
+        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
+      }
+      return productObj;
+    });
+    console.log("All products fetched and URLs adjusted");
+    res.send(productsWithAdjustedImages);
   } catch (err) {
     console.error("All Products Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch products" });
@@ -279,8 +289,18 @@ app.get('/newcollections',async(req,res)=>{
     await connectToDatabase();
     let products=await Product.find();
     let newCollections=products.slice(1).slice(-8);
-    console.log("Newcollections Fetched");
-    res.send(newCollections);
+    // Dynamically adjust image URLs to the current host
+    const host = req.get("host");
+    const protocol = req.protocol;
+    const adjustedCollections = newCollections.map(product => {
+      let productObj = product.toObject();
+      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
+        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
+      }
+      return productObj;
+    });
+    console.log("Newcollections Fetched and URLs adjusted");
+    res.send(adjustedCollections);
   } catch (err) {
     console.error("NewCollections Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch new collections" });
@@ -293,8 +313,18 @@ app.get('/popularinmen',async(req,res)=>{
     await connectToDatabase();
     let products=await Product.find({category:'men'});
     let popular_in_men=products.slice(0,4);
-    console.log("Popular in men fetched");
-    res.send(popular_in_men);
+    // Dynamically adjust image URLs to the current host
+    const host = req.get("host");
+    const protocol = req.protocol;
+    const adjustedPopular = popular_in_men.map(product => {
+      let productObj = product.toObject();
+      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
+        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
+      }
+      return productObj;
+    });
+    console.log("Popular in men fetched and URLs adjusted");
+    res.send(adjustedPopular);
   } catch (err) {
     console.error("Popular in Men Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch popular items" });
