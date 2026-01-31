@@ -123,10 +123,18 @@ const getNormalizedImageUrl = (image, req) => {
 };
 
 //creating endpoint for images
-// Use an absolute path for express.static to be safer on Vercel
-const imagesPath = path.resolve(__dirname, "upload", "images");
+// Use process.cwd() to correctly locate the folder on Vercel's filesystem
+const imagesPath = path.join(process.cwd(), "upload", "images");
 app.use("/images", express.static(imagesPath));
-console.log(`Static images path configured at: ${imagesPath}`);
+console.log(`Static images path verified at: ${imagesPath}`);
+
+// Debug check for directory contents on startup
+const fs = require('fs');
+if (fs.existsSync(imagesPath)) {
+  console.log(`Contents of ${imagesPath}:`, fs.readdirSync(imagesPath).slice(0, 5));
+} else {
+  console.warn(`WARNING: Images directory not found at ${imagesPath}`);
+}
 app.post("/upload", upload.single("product"), (req, res) => {
   if (process.env.VERCEL) {
     if (!req.file) {

@@ -48,7 +48,12 @@ const Addproduct = () => {
       const uploadData = await uploadResp.json();
       
       if (uploadData.success) {
-        let product = { ...productDetails, image: uploadData.image_url };
+        // IMPORTANT: Only save the filename in the database to keep it environment-neutral
+        let finalImageUrl = uploadData.image_url;
+        if (!finalImageUrl.startsWith("data:") && finalImageUrl.includes("://")) {
+            finalImageUrl = finalImageUrl.split("/").pop();
+        }
+        let product = { ...productDetails, image: finalImageUrl };
         
         const addResp = await fetch(backendUrl + "/addproduct", {
           method: "POST",

@@ -10,13 +10,11 @@ const Popular = () => {
     fetch(backendUrl + "/popularinmen")
       .then((res) => res.json())
       .then((data) => {
-        // Frontend normalization fallback
+        // Aggressive Frontend Heal
         const normalizedData = data.map(item => {
-          if (item.image && item.image.includes("localhost:4000")) {
-            const filename = item.image.split("/").pop();
-            return { ...item, image: `${backendUrl}/images/${filename}` };
-          }
-          return item;
+          if (!item.image || item.image.startsWith("data:")) return item;
+          const filename = item.image.replace(/\\/g, '/').split("/").pop();
+          return { ...item, image: `${backendUrl}/images/${filename}` };
         });
         setData_product(normalizedData);
       })

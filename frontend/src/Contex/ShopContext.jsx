@@ -9,17 +9,25 @@ const getDefaultCart = () => {
   return cart;
 };
 
-// Frontend safety net: Normalize URLs locally if the backend sends stale localhost links
+// Universal Image Healer: Forcefully repairs any broken image path to point to our production backend
 const getNormalizedImageUrl = (url, backendBaseUrl) => {
   if (!url) return url;
-  if (url.startsWith("data:")) return url; // Base64
+  if (url.startsWith("data:")) return url; // Base64 is fine
   
-  if (url.includes("localhost:4000")) {
-    // Extract filename and rebuild with correct backend base
-    const filename = url.split("/").pop();
-    return `${backendBaseUrl}/images/${filename}`;
+  // 1. If it's a full URL (likely localhost:4000), extract the filename and fix it
+  if (url.includes("://")) {
+    try {
+      const parts = url.replace(/\\/g, '/').split("/");
+      const filename = parts[parts.length - 1];
+      return `${backendBaseUrl}/images/${filename}`;
+    } catch (e) {
+      return url;
+    }
   }
-  return url;
+  
+  // 2. If it's just a filename or relative path
+  const filename = url.replace(/\\/g, '/').split("/").pop();
+  return `${backendBaseUrl}/images/${filename}`;
 };
 
 const ShopContextProvider = (props) => {
