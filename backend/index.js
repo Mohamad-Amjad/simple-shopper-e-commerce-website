@@ -63,11 +63,18 @@ const upload = multer({
 app.use("/images", express.static("./upload/images"));
 app.post("/upload", upload.single("product"), (req, res) => {
   if (process.env.VERCEL) {
-     return res.status(200).json({
-        success: 1,
-        image_url: "https://via.placeholder.com/150?text=Image+Upload+Not+Supported+On+Vercel+Without+Cloudinary", 
-        message: "Image upload handled in memory (non-persistent) for Vercel demo."
-     });
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "No file uploaded" });
+    }
+    // Convert image buffer to Base64 Data URI for Vercel persistence
+    const base64Image = Buffer.from(req.file.buffer).toString("base64");
+    const dataUri = `data:${req.file.mimetype};base64,${base64Image}`;
+    
+    return res.status(200).json({
+      success: 1,
+      image_url: dataUri,
+      message: "Image converted to Base64 for Vercel persistence."
+    });
   }
 
   const host = req.get("host"); // gets host dynamically
