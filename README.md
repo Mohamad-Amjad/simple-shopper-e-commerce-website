@@ -51,9 +51,9 @@ simple-shopper-e-commerce-website/
 └── backend/ # Express API (MongoDB Atlas)
 
 ## Frontend
-cd frontend
-npm install
-npm start
+-cd frontend
+-npm install
+-npm start
 
 ## backend
 cd backend
