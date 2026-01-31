@@ -122,8 +122,7 @@ app.post("/addproduct", async (req, res) => {
   res.json({
     success: true,
     name: req.body.name,
-    // Warning for user if running on Vercel regarding image persistence
-    // warning: process.env.VERCEL ? "Images will not persist!" : undefined 
+
   });
 });
 
