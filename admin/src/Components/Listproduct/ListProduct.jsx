@@ -5,25 +5,29 @@ import cross_icon from '../../assets/cross_icon.png';
 const ListProduct = () => {
   const [allProducts, setAllProducts] = useState([]);
 
+  // Automatic Environment Detection
+  const getBackendUrl = () => {
+    if (window.location.hostname === "localhost") return "http://localhost:4000";
+    return "https://shopper-backend-wheat.vercel.app";
+  };
+
   const fetchData = async () => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    const backendUrl = getBackendUrl();
     await fetch(backendUrl + "/allproducts")
       .then((res) => res.json())
       .then((data) => {
-        // Frontend normalization fallback
+        // Aggressive Frontend Heal
         const normalizedData = data.map((item) => {
-          if (item.image && item.image.includes("localhost:4000")) {
-            const filename = item.image.split("/").pop();
-            return { ...item, image: `${backendUrl}/images/${filename}` };
-          }
-          return item;
+          if (!item.image || item.image.startsWith("data:")) return item;
+          const filename = item.image.replace(/\\/g, '/').split("/").pop();
+          return { ...item, image: `${backendUrl}/images/${filename}` };
         });
         setAllProducts(normalizedData);
       });
   };
 
   const remove_product = async (id) => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    const backendUrl = getBackendUrl();
     await fetch(backendUrl + '/removeproduct', {
       method:'POST',
       headers:{

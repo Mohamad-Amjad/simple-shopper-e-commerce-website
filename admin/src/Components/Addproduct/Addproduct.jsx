@@ -20,8 +20,14 @@ const Addproduct = () => {
     setImage(e.target.files[0]);
   };
 
+  // Automatic Environment Detection
+  const getBackendUrl = () => {
+    if (window.location.hostname === "localhost") return "http://localhost:4000";
+    return "https://shopper-backend-wheat.vercel.app";
+  };
+
   const add_product = async () => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    const backendUrl = getBackendUrl();
     let product = { ...productDetails };
 
     let formData = new FormData();

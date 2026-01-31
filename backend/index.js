@@ -149,10 +149,10 @@ const getNormalizedImageUrl = (image, req) => {
 };
 
 //creating endpoint for images
-// Use process.cwd() to correctly locate the folder on Vercel's filesystem
-const imagesPath = path.join(process.cwd(), "upload", "images");
+// Use __dirname + path.join for the most reliable path resolution across all Node versions
+const imagesPath = path.join(__dirname, "upload", "images");
 app.use("/images", express.static(imagesPath));
-console.log(`Static images path verified at: ${imagesPath}`);
+console.log(`Static images path configured at: ${imagesPath}`);
 
 // Debug check for directory contents on startup
 const fs = require('fs');

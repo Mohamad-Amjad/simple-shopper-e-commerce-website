@@ -9,12 +9,20 @@ const getDefaultCart = () => {
   return cart;
 };
 
-// Universal Image Healer: Forcefully repairs any broken image path to point to our production backend
-const getNormalizedImageUrl = (url, backendBaseUrl) => {
+// Automatic Environment Detection
+const getBackendUrl = () => {
+  if (window.location.hostname === "localhost") return "http://localhost:4000";
+  return "https://shopper-backend-wheat.vercel.app";
+};
+
+// Universal Image Healer: Forcefully repairs any broken image path to point to our detected backend
+const getNormalizedImageUrl = (url) => {
   if (!url) return url;
   if (url.startsWith("data:")) return url; // Base64 is fine
   
+  const backendBaseUrl = getBackendUrl();
   let finalUrl = url;
+  
   // 1. If it's a full URL (likely localhost:4000), extract the filename and fix it
   if (url.includes("://")) {
     try {
@@ -30,7 +38,6 @@ const getNormalizedImageUrl = (url, backendBaseUrl) => {
     finalUrl = `${backendBaseUrl}/images/${filename}`;
   }
   
-  console.log(`[DIAGNOSTIC] Image Normalized: "${url}" -> "${finalUrl}"`);
   return finalUrl;
 };
 
@@ -39,8 +46,8 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
 
   useEffect(() => {
-    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
-    console.log("Fetching products from:", backendUrl + "/allproducts");
+    const backendUrl = getBackendUrl();
+    console.log("Detecting backend URL:", backendUrl);
     
     fetch(backendUrl + "/allproducts")
       .then((res) => {
@@ -48,11 +55,10 @@ const ShopContextProvider = (props) => {
         return res.json();
       })
       .then((data) => {
-        console.log(`[DIAGNOSTIC] Received ${data.length} products from backend.`);
         // Normalize images on frontend as a fallback
         const normalizedData = data.map(item => ({
           ...item,
-          image: getNormalizedImageUrl(item.image, backendUrl)
+          image: getNormalizedImageUrl(item.image)
         }));
         setAll_product(normalizedData);
       })
@@ -75,7 +81,7 @@ const ShopContextProvider = (props) => {
 
   const addToCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    const backendUrl = getBackendUrl();
     if (localStorage.getItem("auth-token")) {
       fetch(backendUrl + "/addtocart", {
         method: "POST",
@@ -93,7 +99,7 @@ const ShopContextProvider = (props) => {
 
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    const backendUrl = getBackendUrl();
     if (localStorage.getItem("auth-token")) {
       fetch(backendUrl + "/removefromcart", {
         method: "POST",

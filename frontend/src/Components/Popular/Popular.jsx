@@ -6,7 +6,13 @@ const Popular = () => {
   const [data_product,setData_product]=useState([]);
 
   useEffect(() => {
-    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    // Automatic Environment Detection
+    const getBackendUrl = () => {
+      if (window.location.hostname === "localhost") return "http://localhost:4000";
+      return "https://shopper-backend-wheat.vercel.app";
+    };
+
+    const backendUrl = getBackendUrl();
     fetch(backendUrl + "/popularinmen")
       .then((res) => res.json())
       .then((data) => {
