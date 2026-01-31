@@ -39,6 +39,32 @@ app.get("/", (req, res) => {
   res.send("Express App is running");
 });
 
+// GET /repair-db - Forcefully clean all localhost URLs from the database
+app.get("/repair-db", async (req, res) => {
+  try {
+    await connectToDatabase();
+    const products = await Product.find({});
+    let repairedCount = 0;
+    
+    for (const product of products) {
+      if (product.image && product.image.includes("localhost")) {
+        const filename = path.basename(product.image.replace(/\\/g, '/'));
+        product.image = filename;
+        await product.save();
+        repairedCount++;
+      }
+    }
+    
+    res.json({
+      success: true,
+      message: `Database repaired successfully. Fixed ${repairedCount} products.`,
+      repairedCount
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /status - verify deployment and file system
 app.get("/status", (req, res) => {
   const imagesPath = path.resolve(__dirname, "upload", "images");

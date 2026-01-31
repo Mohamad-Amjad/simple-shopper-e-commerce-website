@@ -14,20 +14,24 @@ const getNormalizedImageUrl = (url, backendBaseUrl) => {
   if (!url) return url;
   if (url.startsWith("data:")) return url; // Base64 is fine
   
+  let finalUrl = url;
   // 1. If it's a full URL (likely localhost:4000), extract the filename and fix it
   if (url.includes("://")) {
     try {
       const parts = url.replace(/\\/g, '/').split("/");
       const filename = parts[parts.length - 1];
-      return `${backendBaseUrl}/images/${filename}`;
+      finalUrl = `${backendBaseUrl}/images/${filename}`;
     } catch (e) {
-      return url;
+      finalUrl = url;
     }
+  } else {
+    // 2. If it's just a filename or relative path
+    const filename = url.replace(/\\/g, '/').split("/").pop();
+    finalUrl = `${backendBaseUrl}/images/${filename}`;
   }
   
-  // 2. If it's just a filename or relative path
-  const filename = url.replace(/\\/g, '/').split("/").pop();
-  return `${backendBaseUrl}/images/${filename}`;
+  console.log(`[DIAGNOSTIC] Image Normalized: "${url}" -> "${finalUrl}"`);
+  return finalUrl;
 };
 
 const ShopContextProvider = (props) => {
@@ -44,6 +48,7 @@ const ShopContextProvider = (props) => {
         return res.json();
       })
       .then((data) => {
+        console.log(`[DIAGNOSTIC] Received ${data.length} products from backend.`);
         // Normalize images on frontend as a fallback
         const normalizedData = data.map(item => ({
           ...item,
