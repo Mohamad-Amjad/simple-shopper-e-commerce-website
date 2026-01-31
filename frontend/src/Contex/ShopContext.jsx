@@ -41,8 +41,9 @@ const ShopContextProvider = (props) => {
 
   const addToCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
     if (localStorage.getItem("auth-token")) {
-      fetch(process.env.REACT_APP_API_URL+"/addtocart", {
+      fetch(backendUrl + "/addtocart", {
         method: "POST",
         headers: {
           Accept: "application/form-data",
@@ -58,8 +59,9 @@ const ShopContextProvider = (props) => {
 
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
     if (localStorage.getItem("auth-token")) {
-      fetch(process.env.REACT_APP_API_URL+"/removefromcart", {
+      fetch(backendUrl + "/removefromcart", {
         method: "POST",
         headers: {
           Accept: "application/form-data",

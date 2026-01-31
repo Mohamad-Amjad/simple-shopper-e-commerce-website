@@ -16,7 +16,7 @@ const RelatedProduct = () => {
         {related.map((item,i)=>{
             return <Item
             key={i}
-            id={item._id} /* Switching to _id for robust routing */
+            id={item.id}
             name={item.name}
             image={item.image}
             new_price={item.new_price}

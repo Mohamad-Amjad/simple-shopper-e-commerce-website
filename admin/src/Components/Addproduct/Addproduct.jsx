@@ -21,8 +21,8 @@ const Addproduct = () => {
   };
 
   const add_product = async () => {
-    let respondData;
-    let product = productDetails;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
+    let product = { ...productDetails };
 
     let formData = new FormData();
     formData.append("product", image);
