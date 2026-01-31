@@ -27,36 +27,41 @@ const Addproduct = () => {
     let formData = new FormData();
     formData.append("product", image);
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-wheat.vercel.app";
-    await fetch(backendUrl + "/upload", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        respondData = data;
-      });
-
-    if (respondData.success) {
-      product.image = respondData.image_url;
-      console.log(product);
-      await fetch(backendUrl + "/addproduct", {
+    try {
+      const uploadResp = await fetch(backendUrl + "/upload", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(product),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          data.success
-            ? alert("data added successfully")
-            : alert("data added failed");
+        body: formData,
+      });
+      const uploadData = await uploadResp.json();
+      
+      if (uploadData.success) {
+        // Use a copy of productDetails to avoid state issues
+        let product = { ...productDetails, image: uploadData.image_url };
+        
+        const addResp = await fetch(backendUrl + "/addproduct", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(product),
         });
+        const addData = await addResp.json();
+        
+        if (addData.success) {
+          alert("Product Added Successfully");
+        } else {
+          alert("Failed to Add Product: " + (addData.error || "Unknown error"));
+        }
+      } else {
+        alert("Image Upload Failed: " + (uploadData.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("An error occurred. Check your connection or file size.");
     }
   };
   return (
