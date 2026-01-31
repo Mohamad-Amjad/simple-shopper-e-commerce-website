@@ -8,10 +8,14 @@ import RelatedProduct from "../Components/RelatedProduct/RelatedProduct";
 const Product = () => {
   const { all_product } = useContext(ShopContext);
   const { productId } = useParams();
-  const product = all_product.find((e) => e._id === productId);
+  const product = all_product.find((e) => e.id === Number(productId));
+
+  if (!product) {
+    return <div style={{padding: "100px", textAlign: "center"}}>Loading product...</div>;
+  }
+
   return (
   <div>
-    
     <ProductDisplay product={product}/>
     <DescriptionBox/>
     <RelatedProduct/>
