@@ -5,9 +5,13 @@ import Item from "../Item/Item";
 const Popular = () => {
   const [data_product,setData_product]=useState([]);
 
-  useEffect(()=>{
-    fetch(process.env.REACT_APP_API_URL+"/popularinmen").then(res=>res.json()).then(data=>setData_product(data));
-  },[]);
+  useEffect(() => {
+    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    fetch(backendUrl + "/popularinmen")
+      .then((res) => res.json())
+      .then((data) => setData_product(data))
+      .catch((err) => console.error("Failed to fetch popular items:", err));
+  }, []);;
   return (
     <div className="popular">
       <h1>POPULAR IN MEN</h1>

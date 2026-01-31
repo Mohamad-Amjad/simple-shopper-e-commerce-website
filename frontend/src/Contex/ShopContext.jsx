@@ -13,12 +13,19 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL+"/allproducts")
-      .then((res) => res.json())
-      .then((data) => setAll_product(data));
+    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    console.log("Fetching products from:", backendUrl + "/allproducts");
+    
+    fetch(backendUrl + "/allproducts")
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
+      .then((data) => setAll_product(data))
+      .catch((err) => console.error("Failed to fetch all products:", err));
 
     if (localStorage.getItem("auth-token")) {
-      fetch(process.env.REACT_APP_API_URL+"/getcart", {
+      fetch(backendUrl + "/getcart", {
         method: "POST",
         headers: {
           Accept: "application/form-data",
@@ -27,7 +34,8 @@ const ShopContextProvider = (props) => {
         },
       })
         .then((res) => res.json())
-        .then((data) => setCartItems(data));
+        .then((data) => setCartItems(data))
+        .catch((err) => console.error("Failed to fetch cart:", err));
     }
   }, []);
 

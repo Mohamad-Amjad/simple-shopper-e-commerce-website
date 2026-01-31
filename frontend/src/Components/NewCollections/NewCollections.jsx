@@ -6,9 +6,11 @@ const NewCollections = () => {
   const [new_collection, setNew_collection] = useState([]);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL+"/newcollections")
+    const backendUrl = process.env.REACT_APP_API_URL || "https://shopper-backend-wheat.vercel.app";
+    fetch(backendUrl + "/newcollections")
       .then((res) => res.json())
-      .then((data) => setNew_collection(data));
+      .then((data) => setNew_collection(data))
+      .catch((err) => console.error("Failed to fetch new collections:", err));
   }, []);
   
   if(new_collection.length===0)
