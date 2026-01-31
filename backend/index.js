@@ -21,9 +21,16 @@ app.get("/", (req, res) => {
   res.send("Express App is running");
 });
 
-//Image storage Engine
+
 const storage = multer.diskStorage({
-  destination: "./upload/images",
+  destination: (req, file, cb) => {
+    // Check if running on Vercel
+    if (process.env.VERCEL) {
+      cb(null, '/tmp'); 
+    } else {
+      cb(null, "./upload/images");
+    }
+  },
   filename: (req, file, cb) => {
     return cb(
       null,
@@ -32,11 +39,21 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: process.env.VERCEL ? multer.memoryStorage() : storage 
+});
 
 //creating endpoint for images
 app.use("/images", express.static("./upload/images"));
 app.post("/upload", upload.single("product"), (req, res) => {
+  if (process.env.VERCEL) {
+     return res.status(200).json({
+        success: 1,
+        image_url: "https://via.placeholder.com/150?text=Image+Upload+Not+Supported+On+Vercel+Without+Cloudinary", 
+        message: "Image upload handled in memory (non-persistent) for Vercel demo."
+     });
+  }
+
   const host = req.get("host"); // gets host dynamically
   const protocol = req.protocol; // gets http or https
   res.json({
@@ -105,6 +122,8 @@ app.post("/addproduct", async (req, res) => {
   res.json({
     success: true,
     name: req.body.name,
+    // Warning for user if running on Vercel regarding image persistence
+    // warning: process.env.VERCEL ? "Images will not persist!" : undefined 
   });
 });
 
@@ -146,7 +165,7 @@ const Users = mongoose.model("Users", {
     type: Date,
     default: Date.now,
   },
-});
+  });
 
 //Creating Endpoint for registering the user
 app.post("/signup", async (req, res) => {
@@ -231,10 +250,11 @@ const fetchUser=async(req,res,next)=>{
   } catch (error) {
     res.status(401).send({error:'please authenticate a valid token'});
   }
-};
+  };
 
 //creating endpoints for adding products into cartdata
 app.post('/addtocart',fetchUser,async(req,res)=>{
+  console.log("added",req.body.itemId);
   let userData=await Users.findOne({_id:req.user.id});
   userData.cartData[req.body.itemId]+=1;
   await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
@@ -243,23 +263,30 @@ app.post('/addtocart',fetchUser,async(req,res)=>{
 
 //creating endpoints for removing products into cartdata
 app.post('/removefromcart',fetchUser,async(req,res)=>{
+  console.log("removed",req.body.itemId);
   let userData=await Users.findOne({_id:req.user.id});
   if(userData.cartData[req.body.itemId]>0)
   userData.cartData[req.body.itemId]-=1;
   await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData});
+  res.json({ success: true, cartData: userData.cartData }); 
 });
 
 //Creating endpoints to get cartData
 app.post('/getcart',fetchUser,async(req,res)=>{
+  console.log("GetCart");
   let userData=await Users.findOne({_id:req.user.id});
   res.json(userData.cartData);
 });
 
 //starting server
+const port = process.env.PORT || 4000;
+
+// Only listen if not running on Vercel
 if (!process.env.VERCEL) {
-  const port = process.env.PORT || 4000;
-  app.listen(port, () => console.log(`Server running locally on http://localhost:${port}`));
+  app.listen(port, () => {
+    console.log(`Server running locally on http://localhost:${port}`);
+  });
 }
 
-// Export app for Vercel serverless
+// Export app for Vercel
 module.exports = app;
