@@ -56,14 +56,14 @@ simple-shopper-e-commerce-website/
 - npm start
 
 ## backend
-cd backend
-npm install
-npx nodemon
+- cd backend
+- npm install
+- npx nodemon
 
 ## admin
-cd admin
-npm install
-npm run dev
+- cd admin
+- npm install
+- npm run dev
 
 
 
