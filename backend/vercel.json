@@ -14,9 +14,7 @@
     }
   },
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "index.js"
-    }
+    { "src": "/images/(.*)", "dest": "/upload/images/$1" },
+    { "src": "/(.*)", "dest": "index.js" }
   ]
 }

@@ -200,10 +200,16 @@ app.post("/addproduct", async (req, res) => {
     } else {
       id = 1;
     }
+    // Sanitize image field before saving to prevent "localhost" pollution
+    let imagePath = req.body.image || "";
+    if (imagePath.includes("://")) {
+      imagePath = path.basename(new URL(imagePath).pathname);
+    }
+
     const product = new Product({
       id: id,
       name: req.body.name,
-      image: req.body.image,
+      image: imagePath, // Save only the relative path or filename
       category: req.body.category,
       new_price: req.body.new_price,
       old_price: req.body.old_price,
