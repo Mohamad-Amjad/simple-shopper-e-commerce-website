@@ -16,7 +16,7 @@ const LoginSignup = () => {
   //creating functions for login and signup
   const login=async()=>{
     let respondData;
-    await fetch(process.env.REACT_API_URL+'/login',{
+    await fetch(process.env.REACT_APP_API_URL+'/login',{
       method:'POST',
       headers:{
         Accept:'application/form-data',

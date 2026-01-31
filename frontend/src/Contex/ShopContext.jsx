@@ -18,7 +18,7 @@ const ShopContextProvider = (props) => {
       .then((data) => setAll_product(data));
 
     if (localStorage.getItem("auth-token")) {
-      fetch(process.env.REACT_APP_APIURL+"/getcart", {
+      fetch(process.env.REACT_APP_API_URL+"/getcart", {
         method: "POST",
         headers: {
           Accept: "application/form-data",
