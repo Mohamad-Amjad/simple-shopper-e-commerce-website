@@ -60,6 +60,39 @@ const upload = multer({
   storage: process.env.VERCEL ? multer.memoryStorage() : storage 
 });
 
+// Utility to normalize image URLs for any host
+const getNormalizedImageUrl = (image, req) => {
+  if (!image) return image;
+  if (image.startsWith("data:")) return image; // Base64 data URI remains as is
+
+  const host = req.get("host");
+  const protocol = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${host}`;
+
+  // If it's an absolute URL (even from a different host), extract the filename
+  if (image.includes("://")) {
+    try {
+      // Handle both full URLs and potential weirdly formatted strings
+      const url = new URL(image);
+      const filename = path.basename(url.pathname);
+      return `${baseUrl}/images/${filename}`;
+    } catch (e) {
+      // Fallback if URL parsing fails
+      const parts = image.split("/");
+      const filename = parts[parts.length - 1];
+      return `${baseUrl}/images/${filename}`;
+    }
+  }
+
+  // If it's a relative path starting with /images/
+  if (image.startsWith("/images/")) {
+    return `${baseUrl}${image}`;
+  }
+  
+  // Otherwise assume it's just the filename
+  return `${baseUrl}/images/${image}`;
+};
+
 //creating endpoint for images
 app.use("/images", express.static(path.join(__dirname, "upload", "images")));
 app.post("/upload", upload.single("product"), (req, res) => {
@@ -179,18 +212,14 @@ app.get("/allproducts", async (req, res) => {
   try {
     await connectToDatabase();
     let products = await Product.find({});
-    // Dynamically adjust image URLs to the current host
-    const host = req.get("host");
-    const protocol = req.protocol;
-    const productsWithAdjustedImages = products.map(product => {
+    // Dynamically adjust image URLs to the current host using normalization utility
+    const productsWithNormalizedImages = products.map(product => {
       let productObj = product.toObject();
-      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
-        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
-      }
+      productObj.image = getNormalizedImageUrl(productObj.image, req);
       return productObj;
     });
-    console.log("All products fetched and URLs adjusted");
-    res.send(productsWithAdjustedImages);
+    console.log("All products fetched and URLs normalized");
+    res.send(productsWithNormalizedImages);
   } catch (err) {
     console.error("All Products Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch products" });
@@ -289,18 +318,14 @@ app.get('/newcollections',async(req,res)=>{
     await connectToDatabase();
     let products=await Product.find();
     let newCollections=products.slice(1).slice(-8);
-    // Dynamically adjust image URLs to the current host
-    const host = req.get("host");
-    const protocol = req.protocol;
-    const adjustedCollections = newCollections.map(product => {
+    // Dynamically adjust image URLs using normalization utility
+    const normalizedCollections = newCollections.map(product => {
       let productObj = product.toObject();
-      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
-        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
-      }
+      productObj.image = getNormalizedImageUrl(productObj.image, req);
       return productObj;
     });
-    console.log("Newcollections Fetched and URLs adjusted");
-    res.send(adjustedCollections);
+    console.log("Newcollections Fetched and URLs normalized");
+    res.send(normalizedCollections);
   } catch (err) {
     console.error("NewCollections Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch new collections" });
@@ -313,18 +338,14 @@ app.get('/popularinmen',async(req,res)=>{
     await connectToDatabase();
     let products=await Product.find({category:'men'});
     let popular_in_men=products.slice(0,4);
-    // Dynamically adjust image URLs to the current host
-    const host = req.get("host");
-    const protocol = req.protocol;
-    const adjustedPopular = popular_in_men.map(product => {
+    // Dynamically adjust image URLs using normalization utility
+    const normalizedPopular = popular_in_men.map(product => {
       let productObj = product.toObject();
-      if (productObj.image && productObj.image.includes("http://localhost:4000")) {
-        productObj.image = productObj.image.replace("http://localhost:4000", `${protocol}://${host}`);
-      }
+      productObj.image = getNormalizedImageUrl(productObj.image, req);
       return productObj;
     });
-    console.log("Popular in men fetched and URLs adjusted");
-    res.send(adjustedPopular);
+    console.log("Popular in men fetched and URLs normalized");
+    res.send(normalizedPopular);
   } catch (err) {
     console.error("Popular in Men Fetch Error:", err);
     res.status(500).send({ error: "Failed to fetch popular items" });
