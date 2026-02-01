@@ -15,8 +15,10 @@ const LoginSignup = () => {
 
   // Automatic Environment Detection
   const getBackendUrl = () => {
-    if (window.location.hostname === "localhost") return "http://localhost:4000";
-    return "https://shopper-backend-wheat.vercel.app";
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+      return "http://localhost:4000";
+    }
+    return process.env.REACT_APP_API_URL || "https://shopper-backend-five.vercel.app";
   };
   //creating functions for login and signup
   const login=async()=>{
