@@ -3,6 +3,7 @@ import "./Addproduct.css";
 import upload_area from "../../assets/upload_area.svg";
 
 const Addproduct = () => {
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(false);
   const [productDetails, setProductDetails] = useState({
     name: "",
@@ -29,6 +30,7 @@ const Addproduct = () => {
   };
 
   const add_product = async () => {
+    setLoading(true);
     const backendUrl = getBackendUrl();
     let product = { ...productDetails };
 
@@ -98,6 +100,8 @@ const Addproduct = () => {
     } catch (error) {
       console.error("Operation Error:", error);
       alert("CRITICAL ERROR: " + error.message + "\n\nTip: If on Vercel, very large images (> 4MB) might fail due to platform limits.");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -163,8 +167,8 @@ const Addproduct = () => {
           hidden
         />
       </div>
-      <button className="addproduct-btn" onClick={() => add_product()}>
-        ADD
+      <button className="addproduct-btn" onClick={() => add_product()} disabled={loading}>
+        {loading ? <div className="loading-spinner"></div> : "ADD"}
       </button>
     </div>
   );
