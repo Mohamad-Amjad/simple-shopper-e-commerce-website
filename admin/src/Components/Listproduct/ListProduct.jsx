@@ -10,7 +10,7 @@ const ListProduct = () => {
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
       return "http://localhost:4000";
     }
-    return "https://shopper-backend-wheat.vercel.app";
+    return import.meta.env.VITE_BACKEND_URL || "https://shopper-backend-five.vercel.app";
   };
 
   const fetchData = async () => {
