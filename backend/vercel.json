@@ -6,13 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "index.js": {
-      "memory": 1024,
-      "maxDuration": 10,
-      "includeFiles": "upload/images/**"
-    }
-  },
   "routes": [
     { "src": "/images/(.*)", "dest": "/upload/images/$1" },
     { "src": "/(.*)", "dest": "index.js" }
